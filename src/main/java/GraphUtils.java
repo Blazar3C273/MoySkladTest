@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -25,6 +25,7 @@ public class GraphUtils {
 
     public static void main(String[] args) {
         try {
+            System.out.println("Введите имя файла:");
             //Читаем имя файла из stdin. Тут столкнулся с не точной формулировкой задания.
             //В ней сказано "файл читать из stdin". непонятно что именно читать. Имя файла? Полный путь? Содержимое?
             //Если все таки содержимое то при чем здесь файл? Тогда это просто чтение даных из stdin.
@@ -32,7 +33,13 @@ public class GraphUtils {
             // GraphUtils graphUtils = new GraphUtils(System.in);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-            GraphUtils graphUtils = new GraphUtils(Files.newInputStream(Paths.get(br.readLine())));
+            Path path = Paths.get(br.readLine());
+            if (Files.isDirectory(path))
+                throw new IOException("Введеная строка является директорией.");
+            if (!Files.exists(path) || !Files.isReadable(path))
+                throw new IOException("Файл с таким именем не существует или недоступен.");
+
+             GraphUtils graphUtils = new GraphUtils(Files.newInputStream(path));
 
             for (List<Integer> integers : graphUtils.getLoops()) {
                 for (Integer integer : integers) {
@@ -41,9 +48,8 @@ public class GraphUtils {
                 System.out.println("");
             }
 
-        } catch (IOException e) {
-            if (e.getClass().equals(NoSuchFileException.class))
-                System.out.println("No file with name \"" + e.getMessage() + "\".");
+        } catch (Exception e) {
+                System.out.println(e.getMessage());
         }
     }
 
@@ -80,7 +86,7 @@ public class GraphUtils {
     @Override
     public boolean equals(Object obj) {
         if (obj != null && obj.getClass().equals(GraphUtils.class))
-            return graph.equals(((GraphUtils) obj).graph);
+            return graph.toString().equals(((GraphUtils) obj).graph.toString());
         return false;
     }
 

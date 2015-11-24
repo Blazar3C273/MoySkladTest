@@ -19,7 +19,7 @@ public class MainTestSuit {
 
     @Test
     public void graphIsLoadingFromFile() throws Exception {
-        GraphUtils graphUtils = new GraphUtils(Files.newInputStream(Paths.get("./src/test/resources/input2.txt")));
+        GraphUtils graphUtils = new GraphUtils(Files.newInputStream(Paths.get("./src/test/resources/input.txt")));
         GraphUtils expectedGraphUtils = new GraphUtils();
         expectedGraphUtils.getGraph().addVertex(1);
         expectedGraphUtils.getGraph().addVertex(2);
